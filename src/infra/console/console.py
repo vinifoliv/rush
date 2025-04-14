@@ -74,7 +74,7 @@ class Console(IConsole):
     def perguntar(self, pergunta: str) -> str:
         return Prompt.ask(pergunta)
 
-    def confirmar(pergunta: str) -> bool:
+    def confirmar(self, pergunta: str) -> bool:
         return Confirm.ask(pergunta)
 
     def info(self, message: str):

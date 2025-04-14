@@ -17,8 +17,8 @@ class Database:
         self._cursor.execute("VACUUM")
         self._conexao.commit()
 
-    def executar(self, query: str):
-        self._cursor.execute(query)
+    def executar(self, query: str, parametros = ()):
+        self._cursor.execute(query, parametros)
 
     def buscarUm(self) -> Any:
         return self._cursor.fetchone()

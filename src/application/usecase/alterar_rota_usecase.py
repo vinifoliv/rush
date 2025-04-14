@@ -6,6 +6,6 @@ class AlterarRotaUsecase:
     def __init__(self, servico_repository: IServicoRepository):
         self._servico_repository = servico_repository
 
-    def executar(self, id: int, caminho: str):
-        rota = Rota(id, caminho)
+    def executar(self, id: int, caminho: str, payload: str):
+        rota = Rota(id, caminho, payload)
         self._servico_repository.alterar_rota(rota)

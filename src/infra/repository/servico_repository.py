@@ -10,16 +10,15 @@ class ServicoRepository(IServicoRepository):
         self._db = db
 
     def criar_servico(self, nome: str) -> Servico:
-        self._db.executar(
-            f"INSERT INTO servicos(nome) VALUES('{nome}') RETURNING *",
-        )
+        self._db.executar(f"INSERT INTO servicos(nome) VALUES(?) RETURNING *", (nome,))
         servico = self._db.buscarUm()
         self._db.commit()
         return self._montar_servico(servico, [])
 
     def alterar_servico(self, servico: Servico):
         self._db.executar(
-            f"UPDATE servicos SET nome='{servico.obter_nome()}' WHERE id={servico.obter_id()}"
+            f"UPDATE servicos SET nome=? WHERE id=?",
+            (servico.obter_nome(), servico.obter_id()),
         )
         self._db.commit()
 
@@ -29,32 +28,34 @@ class ServicoRepository(IServicoRepository):
         return list(map(lambda s: self._montar_servico(s, []), servicos))
 
     def buscar_servico_por_id(self, id: int) -> Servico:
-        self._db.executar(f"SELECT * FROM servicos WHERE id={id}")
+        self._db.executar(f"SELECT * FROM servicos WHERE id=?", (id,))
         servico = self._db.buscarUm()
         if not servico:
             return None
         return self._montar_servico(servico, [])
 
     def buscar_servico_por_nome(self, nome: str) -> Servico:
-        self._db.executar(f"SELECT * FROM servicos WHERE nome='{nome}'")
+        self._db.executar(f"SELECT * FROM servicos WHERE nome=?", (nome,))
         servico = self._db.buscarUm()
         if not servico:
             return None
         return self._montar_servico(servico, [])
 
     def excluir_servico(self, id: int):
-        self._db.executar(f"DELETE FROM servicos WHERE id={id}")
+        self._db.executar(f"DELETE FROM servicos WHERE id=?", (id,))
         self._db.commit()
 
-    def criar_rota(self, caminho: str, servico_id: int):
+    def criar_rota(self, caminho: str, payload: str, servico_id: int):
         self._db.executar(
-            f"INSERT INTO rotas (caminho, servico_id) VALUES ('{caminho}', {servico_id})"
+            f"INSERT INTO rotas (caminho, payload, servico_id) VALUES (?, ?, ?)",
+            (caminho, payload, servico_id),
         )
         self._db.commit()
 
     def alterar_rota(self, rota: Rota):
         self._db.executar(
-            f"UPDATE rotas SET caminho='{rota.obter_caminho()}', payload='{rota.obter_payload()}' WHERE id={rota.obter_id()}"
+            f"UPDATE rotas SET caminho=?, payload=? WHERE id=?",
+            (rota.obter_caminho(), rota.obter_payload(), rota.obter_id()),
         )
         self._db.commit()
 
@@ -62,23 +63,28 @@ class ServicoRepository(IServicoRepository):
         self, caminho: str, servico_id: int
     ) -> Rota:
         self._db.executar(
-            f"SELECT FROM * rotas WHERE caminho='{caminho}', servico_id={servico_id}"
+            f"SELECT * FROM rotas WHERE caminho=? AND servico_id=?",
+            (caminho, servico_id),
         )
         rota = self._db.buscarUm()
+        if rota == None:
+            return None
         return self._montar_rota(rota)
 
     def buscar_rotas_por_servico_id(self, servico_id: int) -> List[Rota]:
-        self._db.executar(f"SELECT * FROM rotas WHERE servico_id={servico_id}")
+        self._db.executar(f"SELECT * FROM rotas WHERE servico_id=?", (servico_id,))
         rotas = self._db.buscarMuitos()
         return list(map(lambda r: self._montar_rota(r), rotas))
 
     def buscar_rota_por_id(self, id: int) -> Rota:
-        self._db.executar(f"SELECT * FROM rotas WHERE id={id}")
+        self._db.executar(f"SELECT * FROM rotas WHERE id=?", (id,))
         rota = self._db.buscarUm()
+        if rota == None:
+            return None
         return self._montar_rota(rota)
 
     def excluir_rota(self, id: int):
-        self._db.executar(f"DELETE FROM rotas WHERE id={id}")
+        self._db.executar(f"DELETE FROM rotas WHERE id=?", (id,))
         self._db.commit()
 
     def _montar_servico(self, servico, rotas) -> Servico:

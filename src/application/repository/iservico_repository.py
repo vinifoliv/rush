@@ -31,7 +31,7 @@ class IServicoRepository(ABC):
         pass
 
     @abstractmethod
-    def criar_rota(caminho: str, servico_id: int):
+    def criar_rota(caminho: str, payload: str, servico_id: int):
         pass
 
     @abstractmethod

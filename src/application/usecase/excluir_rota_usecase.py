@@ -6,4 +6,7 @@ class ExcluirRotaUsecase:
         self._servico_repository = servico_repository
 
     def executar(self, id: int):
+        rota_existe = self._servico_repository.buscar_rota_por_id(id)
+        if not rota_existe:
+            raise ValueError("Rota não encontrada.")
         self._servico_repository.excluir_rota(id)

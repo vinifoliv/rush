@@ -55,22 +55,28 @@ class ServicoCLI(ICLI):
 
     def executar(self):
         while True:
-            self._console.clear()
-            servicos = self._buscar_servico_usecase.executar()
-            self._listar_servicos(servicos)
-            self._console.menu(self._opcoes_servicos, self._titulo)
-            opcao_escolhida = self._console.obter_opcao_escolhida(self._opcoes_servicos)
-            match opcao_escolhida:
-                case 1:
-                    self._criar_servico()
-                case 2:
-                    self._alterar_servico(servicos)
-                case 3:
-                    self._consultar()
-                case 4:
-                    self._excluir()
-                case 5:
-                    return
+            try:
+                self._console.clear()
+                servicos = self._buscar_servico_usecase.executar()
+                self._listar_servicos(servicos)
+                self._console.menu(self._opcoes_servicos, self._titulo)
+                opcao_escolhida = self._console.obter_opcao_escolhida(
+                    self._opcoes_servicos
+                )
+                match opcao_escolhida:
+                    case 1:
+                        self._criar_servico()
+                    case 2:
+                        self._alterar_servico(servicos)
+                    case 3:
+                        self._consultar()
+                    case 4:
+                        self._excluir()
+                    case 5:
+                        return
+            except ValueError as e:
+                self._console.error(e)
+                input()
 
     def _criar_servico(self):
         nome = self._console.perguntar("Nome")

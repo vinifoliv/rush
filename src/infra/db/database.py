@@ -1,4 +1,5 @@
 import sqlite3
+from typing import Any, List
 
 
 class Database:
@@ -18,6 +19,11 @@ class Database:
 
     def executar(self, query: str):
         self._cursor.execute(query)
+
+    def buscarUm(self) -> Any:
+        return self._cursor.fetchone()
+
+    def buscarMuitos(self) -> List[Any]:
         return self._cursor.fetchall()
 
     def commit(self):

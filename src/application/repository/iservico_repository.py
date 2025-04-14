@@ -19,6 +19,14 @@ class IServicoRepository(ABC):
         pass
 
     @abstractmethod
+    def buscar_servico_por_id(id: int) -> Servico:
+        pass
+
+    @abstractmethod
+    def buscar_servico_por_nome(nome: str) -> Servico:
+        pass
+
+    @abstractmethod
     def excluir_servico(id: int):
         pass
 
@@ -31,7 +39,15 @@ class IServicoRepository(ABC):
         pass
 
     @abstractmethod
+    def buscar_rota_por_caminho_e_servico_id(caminho: str, servico_id: int) -> Rota:
+        pass
+
+    @abstractmethod
     def buscar_rotas_por_servico_id(servico_id: int) -> List[Rota]:
+        pass
+
+    @abstractmethod
+    def buscar_rota_por_id(id: int) -> Rota:
         pass
 
     @abstractmethod

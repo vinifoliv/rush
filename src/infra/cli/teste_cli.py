@@ -23,8 +23,8 @@ class TesteCLI(ICLI):
         self._testar_rota_usecase = testar_rota_usecase
 
     def executar(self):
-        try:
-            while True:
+        while True:
+            try:
                 self._console.clear()
                 servico = self._obter_servico()
                 rota = self._obter_rota(servico)
@@ -39,9 +39,9 @@ class TesteCLI(ICLI):
                 continuar = self._console.confirmar("Continuar?")
                 if not continuar:
                     break
-        except ValueError as e:
-            self._console.error(e)
-            input()
+            except ValueError as e:
+                self._console.error(e)
+                input()
 
     def _obter_servico(self):
         servicos = self._buscar_servicos_usecase.executar()

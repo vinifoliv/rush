@@ -30,3 +30,7 @@ class IConsole(ABC):
     @abstractmethod
     def error(message: str):
         pass
+
+    @abstractmethod
+    def pressione_qualquer_tecla():
+        pass

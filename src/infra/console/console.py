@@ -88,3 +88,7 @@ class Console(IConsole):
 
     def exit(self, codigo: int = 0):
         sys.exit(codigo)
+
+    def pressione_qualquer_tecla(self):
+        rprint("Pressione qualquer tecla...")
+        input()

@@ -38,8 +38,8 @@ class RotaCLI(ICLI):
         }
 
     def executar(self, servico: Servico):
-        try:
-            while True:
+        while True:
+            try:
                 self._console.clear()
                 rotas = self._buscar_rotas_por_servico_id_usecase.executar(
                     servico.obter_id()
@@ -64,9 +64,11 @@ class RotaCLI(ICLI):
                     case _:
                         self._console.error("Operação inválida...")
                         input()
-        except ValueError as e:
-            self._console.error(e)
-            input()
+            except ValueError as e:
+                self._console.error(e)
+                continuar = self._console.confirmar("Continuar?")
+                if not continuar:
+                    break
 
     def _criar_rota(self, servico: Servico):
         metodo = MetodoHTTP(self._console.perguntar("Método").upper())

@@ -18,37 +18,34 @@ class ServicoCLI(ICLI):
         rota_cli: RotaCLI,
         criar_servico_usecase: CriarServicoUsecase,
         alterar_servico_usecase: AlterarServicoUsecase,
-        buscar_servico_usecase: BuscarServicosUsecase,
+        buscar_servicos_usecase: BuscarServicosUsecase,
         excluir_servico_usecase: ExcluirServicoUsecase,
     ):
         self._console = console
         self._rota_cli = rota_cli
         self._criar_servico_usecase = criar_servico_usecase
         self._alterar_servico_usecase = alterar_servico_usecase
-        self._buscar_servico_usecase = buscar_servico_usecase
+        self._buscar_servicos_usecase = buscar_servicos_usecase
         self._excluir_servico_usecase = excluir_servico_usecase
-        self._titulo = "O que deseja fazer?"
-        self._opcoes_servicos = {
+
+    def executar(self):
+        opcoes = {
             1: "Criar um serviço",
             2: "Alterar um serviço",
             3: "Consultar serviços",
             4: "Excluir um serviço",
             5: "Sair",
         }
-        self._opcoes_rotas = {
-            1: "Adicionar rota",
-            2: "Alterar rota",
-            3: "Excluir rota",
-            4: "Finalizar",
-        }
 
-    def executar(self):
         while True:
             try:
                 self._console.clear()
-                servicos = self._buscar_servico_usecase.executar()
+                servicos = self._buscar_servicos_usecase.executar()
                 self._listar_servicos(servicos)
-                self._console.menu(self._opcoes_servicos, self._titulo)
+                self._console.menu(
+                    opcoes=opcoes,
+                    titulo="O que deseja fazer?",
+                )
                 opcao_escolhida = self._console.obter_opcao_escolhida(
                     self._opcoes_servicos
                 )
@@ -65,7 +62,9 @@ class ServicoCLI(ICLI):
                         return
             except ValueError as e:
                 self._console.error(e)
-                input()
+                continuar = self._console.confirmar("Continuar?")
+                if not continuar:
+                    break
 
     def _criar_servico(self):
         nome = self._console.perguntar("Nome")

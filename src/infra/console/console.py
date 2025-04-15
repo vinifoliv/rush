@@ -50,7 +50,7 @@ class Console(IConsole):
         while True:
             opcao_escolhida = int(Prompt.ask("Selecione uma opção"))
             if not opcao_escolhida in opcoes.keys():
-                self._console.error(f"Opção '{opcao_escolhida}' inválida!")
+                self.error(f"Opção '{opcao_escolhida}' inválida!")
                 continue
             return opcao_escolhida
 

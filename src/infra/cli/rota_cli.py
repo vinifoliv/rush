@@ -1,11 +1,11 @@
 from typing import List
-from application.repository.iservico_repository import IServicoRepository
 from application.usecase.alterar_rota_usecase import AlterarRotaUsecase
 from application.usecase.buscar_rotas_por_servico_id_usecase import (
     BuscarRotasPorServicoIdUsecase,
 )
 from application.usecase.criar_rota_usecase import CriarRotaUsecase
 from application.usecase.excluir_rota_usecase import ExcluirRotaUsecase
+from domain.entity.metodo_http import MetodoHTTP
 from domain.entity.rota import Rota
 from domain.entity.servico import Servico
 from infra.cli.icli import ICLI
@@ -69,6 +69,7 @@ class RotaCLI(ICLI):
             input()
 
     def _criar_rota(self, servico: Servico):
+        metodo = MetodoHTTP(self._console.perguntar("Método").upper())
         caminho = self._console.perguntar("Caminho")
         if caminho == "":
             raise ValueError(f"O caminho '{caminho}' é inválido.")
@@ -77,23 +78,33 @@ class RotaCLI(ICLI):
         if self._console.confirmar("Adicionar payload?"):
             payload = self._obter_payload()
 
-        self._criar_rota_usecase.executar(caminho, payload, servico.obter_id())
+        self._criar_rota_usecase.executar(metodo, caminho, payload, servico.obter_id())
 
     def _alterar_rota(self, rotas: List[Rota]):
         rota_id = int(self._console.perguntar("Rota a alterar"))
         rota = next((r for r in rotas if r.obter_id() == rota_id), None)
         if rota == None:
             raise ValueError(f" A rota '{rota_id}' é inválida.")
+
+        metodo = self._console.perguntar("Método")
+        if metodo == "":
+            metodo = rota.obter_metodo()
+        else:
+            metodo = MetodoHTTP(metodo)
+
         caminho = self._console.perguntar("Digite a rota")
         if caminho == "":
             caminho = rota.obter_caminho()
+
         alterar_payload = self._console.confirmar("Alterar payload?")
         if not alterar_payload:
-            self._alterar_rota_usecase.executar(rota_id, caminho, rota.obter_payload())
+            self._alterar_rota_usecase.executar(
+                rota_id, metodo, caminho, rota.obter_payload()
+            )
             return
         caminho_payload = self._console.perguntar("Digite o caminho")
         payload = self._file_system.ler_arquivo(caminho_payload)
-        self._alterar_rota_usecase.executar(rota_id, caminho, payload)
+        self._alterar_rota_usecase.executar(rota_id, metodo, caminho, payload)
 
     def _excluir_rota(self):
         rota_id = int(self._console.perguntar("Rota a excluir"))
@@ -103,7 +114,7 @@ class RotaCLI(ICLI):
         self._console.print(f"[bold yellow]{nome}[/bold yellow]")
         for rota in rotas:
             self._console.print(
-                f"[magenta]{rota.obter_id()}.[/magenta] [green]{rota.obter_caminho()}[/green]"
+                f"[magenta]{rota.obter_id()}.[/magenta] [cyan]{rota.obter_metodo().obter_valor()}[/cyan] [green]{rota.obter_caminho()}[/green]"
             )
             payload = rota.obter_payload()
             if not payload:

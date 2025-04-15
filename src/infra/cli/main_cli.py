@@ -1,14 +1,17 @@
-from infra.cli.database_cli import DatabaseCLI
 from infra.cli.icli import ICLI
 from infra.cli.iconsole import IConsole
-from infra.cli.servico_cli import ServicoCLI
 
 
 class MainCLI(ICLI):
     def __init__(
-        self, console: IConsole, servico_cli: ServicoCLI, database_cli: DatabaseCLI
+        self,
+        console: IConsole,
+        teste_cli: ICLI,
+        servico_cli: ICLI,
+        database_cli: ICLI,
     ):
         self._console = console
+        self._teste_cli = teste_cli
         self._servico_cli = servico_cli
         self._database_cli = database_cli
         self._titulo = "Bem vindo"
@@ -26,7 +29,7 @@ class MainCLI(ICLI):
             opcao_escolhida = self._console.obter_opcao_escolhida(self._opcoes)
             match opcao_escolhida:
                 case 1:
-                    self._console.error("Testes ainda não estão disponíveis!")
+                    self._teste_cli.executar()
                 case 2:
                     self._servico_cli.executar()
                 case 3:

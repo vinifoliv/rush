@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 
+from domain.entity.metodo_http import MetodoHTTP
 from domain.entity.rota import Rota
 from domain.entity.servico import Servico
 
@@ -31,7 +32,7 @@ class IServicoRepository(ABC):
         pass
 
     @abstractmethod
-    def criar_rota(caminho: str, payload: str, servico_id: int):
+    def criar_rota(metodo: MetodoHTTP, caminho: str, payload: str, servico_id: int):
         pass
 
     @abstractmethod

@@ -8,20 +8,27 @@ from application.usecase.criar_rota_usecase import CriarRotaUsecase
 from application.usecase.criar_servico_usecase import CriarServicoUsecase
 from application.usecase.excluir_rota_usecase import ExcluirRotaUsecase
 from application.usecase.excluir_servico_usecase import ExcluirServicoUsecase
+from application.usecase.testar_rota_usecase import TestarRotaUsecase
 from infra.cli.database_cli import DatabaseCLI
 from infra.cli.main_cli import MainCLI
 from infra.cli.rota_cli import RotaCLI
 from infra.cli.servico_cli import ServicoCLI
+from infra.cli.teste_cli import TesteCLI
 from infra.console.console import Console
 from infra.db.database import Database
 from infra.file_system.file_system import FileSystem
+from infra.gateway.network_gateway import NetworkGateway
 from infra.repository.servico_repository import ServicoRepository
 
 console = Console()
 file_system = FileSystem()
 db = Database()
 
+network_gateway = NetworkGateway()
+
 servico_repository = ServicoRepository(db)
+
+testar_rota_usecase = TestarRotaUsecase(network_gateway)
 
 criar_rota_usecase = CriarRotaUsecase(servico_repository)
 alterar_rota_usecase = AlterarRotaUsecase(servico_repository)
@@ -33,6 +40,12 @@ alterar_servico_usecase = AlterarServicoUsecase(servico_repository)
 buscar_servicos_usecase = BuscarServicosUsecase(servico_repository)
 excluir_servico_usecase = ExcluirServicoUsecase(servico_repository)
 
+teste_cli = TesteCLI(
+    console,
+    buscar_servicos_usecase,
+    buscar_rotas_por_servico_id_usecase,
+    testar_rota_usecase,
+)
 rota_cli = RotaCLI(
     console,
     file_system,
@@ -51,5 +64,5 @@ servico_cli = ServicoCLI(
 )
 database_cli = DatabaseCLI(console, db)
 
-cli = MainCLI(console, servico_cli, database_cli)
+cli = MainCLI(console, teste_cli, servico_cli, database_cli)
 cli.executar()

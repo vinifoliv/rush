@@ -1,5 +1,6 @@
 from typing import List
 from application.repository.iservico_repository import IServicoRepository
+from domain.entity.metodo_http import MetodoHTTP
 from domain.entity.rota import Rota
 from domain.entity.servico import Servico
 from infra.db.database import Database
@@ -45,17 +46,24 @@ class ServicoRepository(IServicoRepository):
         self._db.executar(f"DELETE FROM servicos WHERE id=?", (id,))
         self._db.commit()
 
-    def criar_rota(self, caminho: str, payload: str, servico_id: int):
+    def criar_rota(
+        self, metodo: MetodoHTTP, caminho: str, payload: str, servico_id: int
+    ):
         self._db.executar(
-            f"INSERT INTO rotas (caminho, payload, servico_id) VALUES (?, ?, ?)",
-            (caminho, payload, servico_id),
+            f"INSERT INTO rotas (metodo, caminho, payload, servico_id) VALUES (?, ?, ?, ?)",
+            (metodo.obter_valor(), caminho, payload, servico_id),
         )
         self._db.commit()
 
     def alterar_rota(self, rota: Rota):
         self._db.executar(
-            f"UPDATE rotas SET caminho=?, payload=? WHERE id=?",
-            (rota.obter_caminho(), rota.obter_payload(), rota.obter_id()),
+            f"UPDATE rotas SET metodo=?, caminho=?, payload=? WHERE id=?",
+            (
+                rota.obter_metodo().obter_valor(),
+                rota.obter_caminho(),
+                rota.obter_payload(),
+                rota.obter_id(),
+            ),
         )
         self._db.commit()
 
@@ -91,4 +99,4 @@ class ServicoRepository(IServicoRepository):
         return Servico(id=servico[0], nome=servico[1], rotas=rotas)
 
     def _montar_rota(self, rota) -> Rota:
-        return Rota(id=rota[0], caminho=rota[1], payload=rota[2])
+        return Rota(id=rota[0], metodo=MetodoHTTP(rota[1]), caminho=rota[2], payload=rota[3])

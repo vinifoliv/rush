@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS servicos (
 
 CREATE TABLE IF NOT EXISTS rotas (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "metodo" VARCHAR(6) NOT NULL,
     "caminho" VARCHAR(255) NOT NULL,
     "payload" TEXT,
     "servico_id" INT NOT NULL,

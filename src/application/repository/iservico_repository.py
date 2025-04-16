@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 
+from domain.entity.dominio import Dominio
 from domain.entity.metodo_http import MetodoHTTP
 from domain.entity.rota import Rota
 from domain.entity.servico import Servico
@@ -8,7 +9,7 @@ from domain.entity.servico import Servico
 
 class IServicoRepository(ABC):
     @abstractmethod
-    def criar_servico(nome: str, rotas: List[str]) -> Servico:
+    def criar_servico(nome: str, dominio: Dominio, rotas: List[str]) -> Servico:
         pass
 
     @abstractmethod

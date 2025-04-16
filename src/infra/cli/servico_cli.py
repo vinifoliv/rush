@@ -46,9 +46,7 @@ class ServicoCLI(ICLI):
                     opcoes=opcoes,
                     titulo="O que deseja fazer?",
                 )
-                opcao_escolhida = self._console.obter_opcao_escolhida(
-                    self._opcoes_servicos
-                )
+                opcao_escolhida = self._console.obter_opcao_escolhida(opcoes)
                 match opcao_escolhida:
                     case 1:
                         self._criar_servico()
@@ -68,17 +66,23 @@ class ServicoCLI(ICLI):
 
     def _criar_servico(self):
         nome = self._console.perguntar("Nome")
-        servico = self._criar_servico_usecase.executar(nome)
+        dominio = self._console.perguntar("Domínio")
+        servico = self._criar_servico_usecase.executar(nome, dominio)
         self._rota_cli.executar(servico)
 
     def _alterar_servico(self, servicos: List[Servico]):
         id = int(self._console.perguntar("Digite o serviço"))
         servico = next((s for s in servicos if s.obter_id() == id), None)
+
         nome = self._console.perguntar(f"Digite o nome ({servico.obter_nome()})")
         if nome != "":
-            self._alterar_servico_usecase.executar(
-                servico.obter_id(), servico.obter_nome()
-            )
+            nome = servico.obter_nome()
+
+        dominio = self._console.perguntar(f"Domínio ({servico.obter_dominio()})")
+        if dominio == "":
+            dominio = servico.obter_dominio()
+
+        self._alterar_servico_usecase.executar(servico.obter_id(), nome, dominio)
         self._rota_cli.executar(servico)
 
     def _excluir(self):
@@ -86,9 +90,7 @@ class ServicoCLI(ICLI):
         self._excluir_servico_usecase.executar(id)
 
     def _listar_servicos(self, servicos: List[Servico]):
-        dic_servicos = {s.obter_id(): s.obter_nome() for s in servicos}
-        self._console.menu(
-            dic_servicos,
-            titulo="Serviços",
-            coluna="Nome",
-        )
+        for s in servicos:
+            self._console.print(
+                f"[magenta]{s.obter_id()}[/] [cyan]{s.obter_dominio()}[/] [green]{s.obter_nome()}[/]"
+            )

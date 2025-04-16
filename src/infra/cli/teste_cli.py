@@ -33,7 +33,7 @@ class TesteCLI(ICLI):
                 )
                 qtde_batches = int(self._console.perguntar("Quantidade de batches"))
                 sessao = self._testar_rota_usecase.executar(
-                    rota, qtde_requisicoes, qtde_batches
+                    servico, rota, qtde_requisicoes, qtde_batches
                 )
                 self._imprimir_sessao(sessao)
                 continuar = self._console.confirmar("Continuar?")
@@ -67,6 +67,7 @@ class TesteCLI(ICLI):
         rota = next((r for r in rotas if r.obter_id() == rota_id), None)
         if not rota:
             raise ValueError("Rota não encontrada.")
+        print(rota.obter_caminho())
         return rota
 
     def _imprimir_sessao(self, sessao: Sessao):

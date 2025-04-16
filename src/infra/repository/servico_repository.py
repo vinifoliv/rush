@@ -1,5 +1,6 @@
 from typing import List
 from application.repository.iservico_repository import IServicoRepository
+from domain.entity.dominio import Dominio
 from domain.entity.metodo_http import MetodoHTTP
 from domain.entity.rota import Rota
 from domain.entity.servico import Servico
@@ -10,16 +11,19 @@ class ServicoRepository(IServicoRepository):
     def __init__(self, db: Database):
         self._db = db
 
-    def criar_servico(self, nome: str) -> Servico:
-        self._db.executar(f"INSERT INTO servicos(nome) VALUES(?) RETURNING *", (nome,))
+    def criar_servico(self, nome: str, dominio: Dominio) -> Servico:
+        self._db.executar(
+            f"INSERT INTO servicos(nome, dominio) VALUES(?, ?) RETURNING *",
+            (nome, dominio.obter_valor()),
+        )
         servico = self._db.buscarUm()
         self._db.commit()
         return self._montar_servico(servico, [])
 
     def alterar_servico(self, servico: Servico):
         self._db.executar(
-            f"UPDATE servicos SET nome=? WHERE id=?",
-            (servico.obter_nome(), servico.obter_id()),
+            f"UPDATE servicos SET nome=?, dominio=? WHERE id=?",
+            (servico.obter_nome(), servico.obter_dominio(), servico.obter_id()),
         )
         self._db.commit()
 
@@ -96,7 +100,14 @@ class ServicoRepository(IServicoRepository):
         self._db.commit()
 
     def _montar_servico(self, servico, rotas) -> Servico:
-        return Servico(id=servico[0], nome=servico[1], rotas=rotas)
+        id = servico[0]
+        nome = servico[1]
+        dominio = Dominio(servico[2])
+        return Servico(id, nome, dominio, rotas)
 
     def _montar_rota(self, rota) -> Rota:
-        return Rota(id=rota[0], metodo=MetodoHTTP(rota[1]), caminho=rota[2], payload=rota[3])
+        id = rota[0]
+        metodo = MetodoHTTP(rota[1])
+        caminho = rota[2]
+        payload = rota[3]
+        return Rota(id, metodo, caminho, payload)

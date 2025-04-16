@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS servicos (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "nome" VARCHAR(255) NOT NULL,
+    "dominio" VARCHAR(255) NOT NULL,
     UNIQUE ("nome")
 );
 

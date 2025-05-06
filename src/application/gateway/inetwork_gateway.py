@@ -1,19 +1,28 @@
-class INetworkGateway:
-        def aquecer(url: str):
-            pass
+from abc import ABC, abstractmethod
+from typing import Any
 
-        def post(url: str, payload: str):
-            pass
 
-        def get(url: str):
-            pass
+class INetworkGateway(ABC):
+    @abstractmethod
+    def aquecer(self, url: str, payload: str = "") -> Any:
+        pass
 
-        def put(url: str, payload: str):
-            pass
+    @abstractmethod
+    def post(self, url: str, payload: str = "") -> Any:
+        pass
 
-        def patch(url: str, payload: str):
-            pass
+    @abstractmethod
+    def get(self, url: str) -> Any:
+        pass
 
-        def delete(url: str):
-            pass
+    @abstractmethod
+    def put(self, url: str, payload: str) -> Any:
+        pass
 
+    @abstractmethod
+    def patch(self, url: str, payload: str) -> Any:
+        pass
+
+    @abstractmethod
+    def delete(self, url: str) -> Any:
+        pass

@@ -4,33 +4,37 @@ from typing import Dict
 
 class IConsole(ABC):
     @abstractmethod
-    def menu(opcoes: Dict[int, str], titulo: str = "", coluna: str = "Opção"):
+    def menu(self, opcoes: Dict[int, str], titulo: str = "", coluna: str = "Opção"):
         pass
 
     @abstractmethod
-    def obter_opcao_escolhida(opcoes: Dict[int, str]):
+    def obter_opcao_escolhida(self, opcoes: Dict[int, str]) -> int:
         pass
 
     @abstractmethod
-    def print(texto: str):
+    def print(self, texto: str):
         pass
 
     @abstractmethod
-    def perguntar(pergunta: str) -> str:
+    def perguntar(self, pergunta: str) -> str:
         pass
 
     @abstractmethod
-    def confirmar(pergunta: str) -> bool:
+    def confirmar(self, pergunta: str) -> bool:
         pass
 
     @abstractmethod
-    def info(message: str):
+    def info(self, message: str):
         pass
 
     @abstractmethod
-    def error(message: str):
+    def error(self, message: str):
         pass
 
     @abstractmethod
-    def pressione_qualquer_tecla():
+    def pressione_qualquer_tecla(self):
+        pass
+
+    @abstractmethod
+    def clear(self):
         pass

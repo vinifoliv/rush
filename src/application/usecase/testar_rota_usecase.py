@@ -14,26 +14,27 @@ class TestarRotaUsecase:
     def executar(
         self, servico: Servico, rota: Rota, qtde_requisicoes: int, qtde_batches: int
     ):
+        url = servico.obter_url(rota)
         batches = []
-        self._aquecer(servico, rota)
+        self._aquecer(url)
         for i in range(qtde_batches):
             requisicoes = []
             for j in range(qtde_requisicoes):
                 inicio = time.time()
-                self._requisitar(servico, rota)
+                self._requisitar(url)
                 fim = time.time()
                 requisicoes.append(Requisicao(inicio * 1000, fim * 1000))
             batches.append(Batch(requisicoes))
         sessao = Sessao(batches)
         return sessao
 
-    def _aquecer(self, servico: Servico, rota: Rota):
-        self._requisitar(servico, rota)
+    def _aquecer(self, rota: Rota):
+        self._requisitar(rota)
 
-    def _requisitar(self, servico: Servico, rota: Rota):
-        metodo = rota.obter_metodo().obter_valor()
-        url = servico.obter_url(rota)
-        payload = rota.obter_payload()
+    def _requisitar(self, rota: Rota):
+        metodo = rota.metodo.valor
+        url = rota.caminho
+        payload = rota.payload
         match metodo:
             case "POST":
                 self._network_gateway.post(url, payload)

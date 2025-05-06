@@ -40,8 +40,10 @@ class ServicoCLI(ICLI):
         while True:
             try:
                 self._console.clear()
+
                 servicos = self._buscar_servicos_usecase.executar()
                 self._listar_servicos(servicos)
+
                 self._console.menu(
                     opcoes=opcoes,
                     titulo="O que deseja fazer?",
@@ -52,14 +54,12 @@ class ServicoCLI(ICLI):
                         self._criar_servico()
                     case 2:
                         self._alterar_servico(servicos)
-                    case 3:
-                        self._consultar()
                     case 4:
                         self._excluir()
                     case 5:
                         return
             except ValueError as e:
-                self._console.error(e)
+                self._console.error(e.args[0])
                 continuar = self._console.confirmar("Continuar?")
                 if not continuar:
                     break
@@ -72,17 +72,20 @@ class ServicoCLI(ICLI):
 
     def _alterar_servico(self, servicos: List[Servico]):
         id = int(self._console.perguntar("Digite o serviço"))
-        servico = next((s for s in servicos if s.obter_id() == id), None)
 
-        nome = self._console.perguntar(f"Digite o nome ({servico.obter_nome()})")
+        servico = next((s for s in servicos if s.id == id), None)
+        if servico is None:
+            raise ValueError("Serviço não encontrado!")
+
+        nome = self._console.perguntar(f"Digite o nome ({servico.nome})")
         if nome != "":
-            nome = servico.obter_nome()
+            nome = servico.nome
 
-        dominio = self._console.perguntar(f"Domínio ({servico.obter_dominio()})")
+        dominio = self._console.perguntar(f"Domínio ({servico.dominio})")
         if dominio == "":
-            dominio = servico.obter_dominio()
+            dominio = servico.dominio.valor
 
-        self._alterar_servico_usecase.executar(servico.obter_id(), nome, dominio)
+        self._alterar_servico_usecase.executar(id, nome, dominio)
         self._rota_cli.executar(servico)
 
     def _excluir(self):
@@ -92,5 +95,5 @@ class ServicoCLI(ICLI):
     def _listar_servicos(self, servicos: List[Servico]):
         for s in servicos:
             self._console.print(
-                f"[magenta]{s.obter_id()}[/] [cyan]{s.obter_dominio()}[/] [green]{s.obter_nome()}[/]"
+                f"[magenta]{s.id}[/] [cyan]{s.dominio.valor}[/] [green]{s.nome}[/]"
             )

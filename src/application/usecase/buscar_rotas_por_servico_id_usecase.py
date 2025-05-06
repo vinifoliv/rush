@@ -9,4 +9,9 @@ class BuscarRotasPorServicoIdUsecase:
         self._servico_repository = servico_repository
 
     def executar(self, servico_id: int) -> List[Rota]:
-        return self._servico_repository.buscar_rotas_por_servico_id(servico_id)
+        servico = self._servico_repository.buscar_servico_por_id(servico_id)
+        if not servico:
+            raise ValueError("Serviço não encontrado!")
+
+        rotas = self._servico_repository.buscar_rotas_por_servico_id(servico_id)
+        return rotas

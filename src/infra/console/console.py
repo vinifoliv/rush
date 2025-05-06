@@ -1,5 +1,6 @@
 import logging
 import os
+import platform
 import sys
 from typing import Any, Dict, List
 from rich import print as rprint
@@ -19,6 +20,7 @@ class Console(IConsole):
 
     def __init__(self):
         self._console = RichConsole()
+        self._operating_system = platform.system()
 
         FORMAT = "%(message)s"
         logging.basicConfig(
@@ -26,9 +28,7 @@ class Console(IConsole):
         )
         self._log = logging.getLogger("rich")
 
-    def menu(
-        self, opcoes: Dict[int, str], titulo: str = "", coluna: str = "Opção"
-    ) -> int:
+    def menu(self, opcoes: Dict[int, str], titulo: str = "", coluna: str = "Opção"):
         table = Table(
             title=f"[bold yellow]{titulo}[/bold yellow]",
             title_justify="left",
@@ -40,7 +40,7 @@ class Console(IConsole):
         table.add_column(coluna, style="green", justify="left")
         if len(opcoes) == 0:
             self._console.print(f"[bold yellow]{titulo}[/bold yellow]")
-            self._console.print(f"[bold cyan]Nenhum dado encontrado.[/bold cyan]")
+            self._console.print("[bold cyan]Nenhum dado encontrado.[/bold cyan]")
             return
         for n, valor in opcoes.items():
             table.add_row(str(n), valor)
@@ -49,7 +49,7 @@ class Console(IConsole):
     def obter_opcao_escolhida(self, opcoes: Dict[int, str]):
         while True:
             opcao_escolhida = int(Prompt.ask("Selecione uma opção"))
-            if not opcao_escolhida in opcoes.keys():
+            if opcao_escolhida not in opcoes.keys():
                 self.error(f"Opção '{opcao_escolhida}' inválida!")
                 continue
             return opcao_escolhida
@@ -65,11 +65,11 @@ class Console(IConsole):
         for i, coluna in enumerate(colunas, 0):
             color = "magenta" if i % 2 == 0 else "green"
             table.add_column(coluna, style=color, justify="left")
-        for linha in linhas:
+        for _ in linhas:
             table.add_row()
 
-    def print(self, text: str):
-        rprint(text)
+    def print(self, texto: str):
+        rprint(texto)
 
     def perguntar(self, pergunta: str) -> str:
         return Prompt.ask(pergunta)
@@ -84,7 +84,10 @@ class Console(IConsole):
         self._console.print(f"[bold red blink]{message}[/]")
 
     def clear(self):
-        os.system("cls")
+        if self._operating_system == "Windows":
+            os.system("cls")
+        else:
+            os.system("clear")
 
     def exit(self, codigo: int = 0):
         sys.exit(codigo)

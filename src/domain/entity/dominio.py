@@ -8,10 +8,7 @@ class Dominio:
             raise ValueError("Domínio vazio!")
         if not self._validar_dominio(valor):
             raise ValueError(f"Domínio '{valor}' inválido!")
-        self._valor = valor
-
-    def obter_valor(self):
-        return self._valor
+        self.valor = valor
 
     def _validar_dominio(self, valor: str):
         padrao = re.compile(

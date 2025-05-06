@@ -31,7 +31,7 @@ class DatabaseCLI(ICLI):
                     case 3:
                         return
             except ValueError as e:
-                self._console.error(e)
+                self._console.error(e.args[0])
                 continuar = self._console.confirmar("Continuar?")
                 if not continuar:
                     break

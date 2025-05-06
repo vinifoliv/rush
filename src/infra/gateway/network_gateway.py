@@ -1,5 +1,7 @@
 import json
+
 import requests
+
 from application.gateway.inetwork_gateway import INetworkGateway
 
 
@@ -7,15 +9,27 @@ class NetworkGateway(INetworkGateway):
     def __init__(self):
         self._sessao = requests.Session()
 
-    def aquecer(self, url, payload):
+    def aquecer(self, url: str, payload: str = ""):
         self._sessao.post(url, payload)
 
-    def post(self, url, payload):
+    def post(self, url: str, payload: str = ""):
         resposta = self._sessao.post(url, payload)
         return resposta
 
-    def get(self, url):
+    def get(self, url: str):
         resposta = self._sessao.get(url)
+        return resposta
+
+    def put(self, url: str, payload: str):
+        resposta = self._sessao.put(url, payload)
+        return resposta
+
+    def patch(self, url: str, payload: str):
+        resposta = self._sessao.patch(url, payload)
+        return resposta
+
+    def delete(self, url: str):
+        resposta = self._sessao.delete(url)
         return resposta
 
     def requisitar(self, url, payload):

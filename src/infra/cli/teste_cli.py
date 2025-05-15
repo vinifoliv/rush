@@ -85,11 +85,11 @@ class TesteCLI(ICLI):
 
     def _imprimir_sessao(self, sessao: Sessao):
         self._console.print(
-            f"[green]Média:[/green] [magenta]{sessao.obter_media()}[/magenta]"
+            f"[green]Média:[/green] [magenta]{sessao.tempo_resposta_medio} ms[/magenta]"
         )
         self._console.print(
-            f"[green]Máximo:[/green] [magenta]{sessao.obter_maximo()}[/magenta]"
+            f"[green]Máximo:[/green] [magenta]{sessao.tempo_resposta_maximo} ms[/magenta]"
         )
         self._console.print(
-            f"[green]Mínimo:[/green] [magenta]{sessao.obter_minimo()}[/magenta]"
+            f"[green]Mínimo:[/green] [magenta]{sessao.tempo_resposta_minimo} ms[/magenta]"
         )

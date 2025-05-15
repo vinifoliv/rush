@@ -4,7 +4,6 @@ from application.usecase.buscar_rotas_por_servico_id_usecase import (
 )
 from application.usecase.criar_rota_usecase import CriarRotaUsecase
 from application.usecase.excluir_rota_usecase import ExcluirRotaUsecase
-from domain.entity.metodo_http import MetodoHTTP
 from domain.entity.servico import Servico
 from infra.cli.iconsole import IConsole
 from infra.cli.ifile_system import IFileSystem
@@ -66,7 +65,7 @@ class RotaCLI:
         if not servico.id:
             raise ValueError("Serviço não possui ID!")
 
-        metodo = MetodoHTTP(self._console.perguntar("Método").upper())
+        metodo = self._console.perguntar("Método").upper()
 
         caminho = self._console.perguntar("Caminho")
         if caminho == "":
@@ -88,8 +87,6 @@ class RotaCLI:
         metodo = self._console.perguntar("Método")
         if metodo == "":
             metodo = rota.metodo
-        else:
-            metodo = MetodoHTTP(metodo)
 
         caminho = self._console.perguntar("Digite a rota")
         if caminho == "":
@@ -113,7 +110,7 @@ class RotaCLI:
         self._console.print(f"[bold yellow]{servico.nome}[/bold yellow]")
         for rota in servico.rotas:
             self._console.print(
-                f"[magenta]{rota.id}.[/magenta] [cyan]{rota.metodo.valor}[/cyan] [green]{rota.caminho}[/green]"
+                f"[magenta]{rota.id}.[/magenta] [cyan]{rota.metodo}[/cyan] [green]{rota.caminho}[/green]"
             )
             payload = rota.payload
             if not payload:

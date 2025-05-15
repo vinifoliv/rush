@@ -68,20 +68,20 @@ class Console(IConsole):
         for _ in linhas:
             table.add_row()
 
-    def print(self, texto: str):
-        rprint(texto)
-
     def perguntar(self, pergunta: str) -> str:
         return Prompt.ask(pergunta)
 
     def confirmar(self, pergunta: str) -> bool:
         return Confirm.ask(pergunta)
 
+    def print(self, texto: str):
+        rprint(texto)
+
     def info(self, message: str):
-        self._log.info(f"{message}")
+        self._console.print(f"[bold cyan]{message}[/]")
 
     def error(self, message: str):
-        self._console.print(f"[bold red blink]{message}[/]")
+        self._console.print(f"[bold red]{message}[/]")
 
     def clear(self):
         if self._operating_system == "Windows":

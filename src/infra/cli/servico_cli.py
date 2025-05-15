@@ -78,12 +78,12 @@ class ServicoCLI(ICLI):
             raise ValueError("Serviço não encontrado!")
 
         nome = self._console.perguntar(f"Digite o nome ({servico.nome})")
-        if nome != "":
+        if nome == "":
             nome = servico.nome
 
         dominio = self._console.perguntar(f"Domínio ({servico.dominio})")
         if dominio == "":
-            dominio = servico.dominio.valor
+            dominio = servico.dominio
 
         self._alterar_servico_usecase.executar(id, nome, dominio)
         self._rota_cli.executar(servico)
@@ -95,5 +95,5 @@ class ServicoCLI(ICLI):
     def _listar_servicos(self, servicos: List[Servico]):
         for s in servicos:
             self._console.print(
-                f"[magenta]{s.id}[/] [cyan]{s.dominio.valor}[/] [green]{s.nome}[/]"
+                f"[magenta]{s.id}[/] [cyan]{s.dominio}[/] [green]{s.nome}[/]"
             )

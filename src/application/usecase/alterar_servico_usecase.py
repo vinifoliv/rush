@@ -1,5 +1,6 @@
 from application.repository.iservico_repository import IServicoRepository
 from domain.entity.dominio import Dominio
+from domain.entity.id import ID
 from domain.entity.servico import Servico
 
 
@@ -12,6 +13,6 @@ class AlterarServicoUsecase:
         if not servico_existe:
             raise ValueError(f"Serviço {nome} não encontrado!")
 
-        servico = Servico(id, nome, Dominio(dominio))
+        servico = Servico(ID(id), nome, Dominio(dominio))
         servico_alterado = self._servico_repository.alterar_servico(servico)
         return servico_alterado

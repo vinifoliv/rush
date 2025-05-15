@@ -38,3 +38,7 @@ class IConsole(ABC):
     @abstractmethod
     def clear(self):
         pass
+
+    @abstractmethod
+    def exit(self):
+        pass

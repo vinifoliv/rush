@@ -1,5 +1,7 @@
 from application.repository.iservico_repository import IServicoRepository
+from domain.entity.caminho import CaminhoRota
 from domain.entity.metodo_http import MetodoHTTP
+from domain.entity.payload import Payload
 from domain.entity.rota import Rota
 
 
@@ -8,7 +10,7 @@ class CriarRotaUsecase:
         self._servico_repository = servico_repository
 
     def executar(
-        self, metodo: MetodoHTTP, caminho: str, payload: str | None, servico_id: int
+        self, metodo: str, caminho: str, payload: str | None, servico_id: int
     ) -> Rota:
         servico_existe = self._servico_repository.buscar_servico_por_id(servico_id)
         if not servico_existe:
@@ -20,7 +22,12 @@ class CriarRotaUsecase:
         if rota_existe:
             raise ValueError("A rota já existe.")
 
-        rota = Rota(id=None, metodo=metodo, caminho=caminho, payload=payload)
+        rota = Rota(
+            id=None,
+            metodo=MetodoHTTP(metodo),
+            caminho=CaminhoRota(caminho),
+            payload=Payload(payload),
+        )
 
         rota_criada = self._servico_repository.criar_rota(rota, servico_id)
         return rota_criada
